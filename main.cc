@@ -24,6 +24,7 @@ string yyin_cpp_command;
 int numberOfOpt=0;
 int Max=0;
 int opt;
+FILE *outstr;
 
 
 
@@ -184,15 +185,8 @@ if(argc==1) {
    scanner_newfilename (filename);
  
      
-    unsigned token_type;
-    while((token_type = yylex())){
-     //printf("%d\n",yylex());  
-    if (token_type == YYEOF)
-            break;
-      } 
-   
 
-   cpplines (yyin, filename);
+  
  
    string outputfile= argv[argc-1];
    string outputtok=outputfile;
@@ -200,20 +194,25 @@ if(argc==1) {
    outputfile=changeSuffix(outputfile, "str");
    outputtok=changeSuffix(outputfile, "tok");
 
-   FILE *out;
-   FILE *out2;
-   
-   out = fopen(outputfile.c_str(), "w");
-   out2 = fopen(outputtok.c_str(), "w");
- 
 
+   outstr = fopen(outputfile.c_str(), "w");
+   outtok = fopen(outputtok.c_str(), "w");
+ 
+    unsigned token_type;
+    while((token_type = yylex())){
+     //printf("%d\n",yylex());  
+    if (token_type == YYEOF)
+            break;
+      } 
+ cpplines (yyin, filename);
+   
    yyin_cpp_pclose();
    DEBUGSTMT ('s', dump_stringset (stderr); );
    yylex_destroy();
-   dump_stringset (out);
-   dump_stringset (out2);
-   fclose(out);
-  fclose(out2);
+   dump_stringset (outstr);
+   //dump_stringset (out2);
+   fclose(outstr);
+  fclose(outtok);
    return get_exitstatus();
 }
 

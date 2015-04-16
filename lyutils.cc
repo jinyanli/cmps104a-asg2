@@ -17,6 +17,8 @@ int scan_linenr = 1;
 int scan_offset = 0;
 bool scan_echo = false;
 vector<string> included_filenames;
+FILE *outtok;
+   
 
 const string* scanner_filename (int filenr) {
    return &included_filenames.at(filenr);
@@ -67,6 +69,9 @@ int yylval_token (int symbol) {
    yylval = new_astree (symbol, included_filenames.size() - 1,
                         scan_linenr, offset, yytext);
     printf("%d %d.%d %d %s (%s) \n", yylval->filenr,yylval->linenr,
+    yylval->offset,yylval->symbol,yylval->lexinfo->c_str(),get_yytname(yylval->symbol));
+    
+    fprintf(outtok,"%d %d.%d %d %s (%s) \n", yylval->filenr,yylval->linenr,
     yylval->offset,yylval->symbol,yylval->lexinfo->c_str(),get_yytname(yylval->symbol));
    return symbol;
 }
