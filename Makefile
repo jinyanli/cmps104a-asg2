@@ -33,7 +33,8 @@ LISTSRC   = ${ALLSRC} ${HYGEN}
 #
 GCC       = g++ -g -O0 -Wall -Wextra -std=gnu++0x
 MKDEPS    = g++ -MM -std=gnu++0x
-
+TESTFILE1 =oc -l 14-ocecho.oc
+TESTFILE2 =oc -l test4.oc
 #
 # The first target is always ``all'', and hence the default,
 # and builds the executable images
@@ -86,14 +87,18 @@ lis : ${LISTSRC} tests
 # Clean and spotless remove generated files.
 #
 clean :
-	- rm ${OBJECTS} ${ALLGENS} ${REPORTS} ${DEPSFILE} core
-	- rm ${foreach test, ${TESTINS:.in=}, \
-		${patsubst %, ${test}.%, out err}}
+	- rm ${OBJECTS} ${ALLGENS} ${REPORTS} ${DEPSFILE} 
+#	- rm ${foreach test, ${TESTINS:.in=}, \
+#		${patsubst %, ${test}.%, out err}}
 
 spotless : clean
 	- rm ${EXECBIN} List.*.ps List.*.pdf
 
-
+submit : 
+	submit cmps104a-wm.s15 asg2 auxlib.cc auxlib.h main.cc Makefile stringset.cc stringset.h scanner.l parser.y astree.cc astree.h lyutils.cc lyutils.h README
+
+
+
 #
 # Build the dependencies file using the C preprocessor
 #
@@ -108,6 +113,10 @@ ${DEPSFILE} :
 #
 # Test
 #
+test1:${TESTFILE1}
+test1:${TESTFILE2}
+
+
 
 tests : ${EXECBIN}
 	touch ${TESTINS}

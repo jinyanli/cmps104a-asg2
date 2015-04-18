@@ -27,10 +27,9 @@ int opt;
 FILE *outstr;
 
 
-
 void scan_opts (int argc, char** argv) {
  yy_flex_debug=0;
-yydebug=0;
+ yydebug=0;
 
   while ((opt = getopt(argc, argv, "@:D:ly")) != -1) {
         
@@ -98,13 +97,16 @@ void chomp (char* string, char delim) {
 
 // Run cpp against the lines of the file.
 void cpplines (FILE* pipe, char* filename) {
+   
    int linenr = 1;
    char inputname[LINESIZE];
    strcpy (inputname, filename);
    for (;;) {
       char buffer[LINESIZE];
       char* fgets_rc = fgets (buffer, LINESIZE, pipe);
+      
       if (fgets_rc == NULL) break;
+      
       chomp (buffer, '\n');
       int sscanf_rc = sscanf (buffer, "# %d \"%[^\"]\"",
                               &linenr, filename);
@@ -117,11 +119,13 @@ void cpplines (FILE* pipe, char* filename) {
          char* token = strtok_r (bufptr, " \t\n", &savepos);
          bufptr = NULL;
          if (token == NULL) break;
+         
          intern_stringset (token);
 
       }
       ++linenr;
    }
+   
 }
 
 string changeSuffix(string filename, string suffix){
@@ -183,11 +187,9 @@ if(argc==1) {
    DEBUGF ('m', "filename = %s, yyin = %p, fileno (yyin) = %d\n",
           filename, yyin, fileno (yyin));
    scanner_newfilename (filename);
- 
-     
+   
+   
 
-  
- 
    string outputfile= argv[argc-1];
    string outputtok=outputfile;
 
@@ -200,11 +202,13 @@ if(argc==1) {
  
     unsigned token_type;
     while((token_type = yylex())){
-     //printf("%d\n",yylex());  
+     //if(yytext!=NULL)
+     //printf("%s\n",yytext); 
     if (token_type == YYEOF)
             break;
-      } 
- cpplines (yyin, filename);
+      }
+   
+   cpplines (yyin, filename);
    
    yyin_cpp_pclose();
    DEBUGSTMT ('s', dump_stringset (stderr); );
@@ -213,6 +217,7 @@ if(argc==1) {
    //dump_stringset (out2);
    fclose(outstr);
   fclose(outtok);
+  
    return get_exitstatus();
 }
 

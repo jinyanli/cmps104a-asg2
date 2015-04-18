@@ -68,11 +68,11 @@ int yylval_token (int symbol) {
    int offset = scan_offset - yyleng;
    yylval = new_astree (symbol, included_filenames.size() - 1,
                         scan_linenr, offset, yytext);
-    printf("%d %d.%d %d %s (%s) \n", yylval->filenr,yylval->linenr,
-    yylval->offset,yylval->symbol,yylval->lexinfo->c_str(),get_yytname(yylval->symbol));
+    //printf("%lu %lu.%03zu %d  %s   (%s) \n", yylval->filenr,yylval->linenr,
+    //yylval->offset,yylval->symbol,yylval->lexinfo->c_str(),get_yytname(yylval->symbol));
     
-    fprintf(outtok,"%d %d.%d %d %s (%s) \n", yylval->filenr,yylval->linenr,
-    yylval->offset,yylval->symbol,yylval->lexinfo->c_str(),get_yytname(yylval->symbol));
+    fprintf(outtok,"%lu %lu.%03zu %3u  %-15s (%s) \n", yylval->filenr,yylval->linenr,
+    yylval->offset,yylval->symbol,get_yytname(yylval->symbol),yylval->lexinfo->c_str());
    return symbol;
 }
 
@@ -97,7 +97,9 @@ void scanner_include (void) {
       errprintf ("%: %d: [%s]: invalid directive, ignored\n",
                  scan_rc, yytext);
    }else {
-      printf (";# %d \"%s\"\n", linenr, filename);
+      printf ("# %d \"%s\"\n", linenr, filename);
+      //printf("%s\n", yytext);
+      fprintf (outtok,"# %d \"%s\"\n", linenr, filename);
       scanner_newfilename (filename);
       scan_linenr = linenr - 1;
       DEBUGF ('m', "filename=%s, scan_linenr=%d\n",
